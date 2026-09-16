@@ -1,0 +1,1 @@
+package com.jarvis.nextgen;import android.service.notification.*;public final class JarvisNotificationListener extends NotificationListenerService{public void onNotificationPosted(StatusBarNotification s){}public void onNotificationRemoved(StatusBarNotification s){}}
