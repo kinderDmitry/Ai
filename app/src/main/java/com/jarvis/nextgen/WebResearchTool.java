@@ -29,10 +29,7 @@ public final class WebResearchTool implements Tool {
                x.contains("research") || x.contains("найди источники") || x.contains("сравни источники");
     }
     @Override public JSONObject schema() {
-        return new JSONObject().put("name", name()).put("description", description())
-                .put("input", new JSONObject().put("type", "object")
-                        .put("properties", new JSONObject().put("query", new JSONObject().put("type", "string")))
-                        .put("required", new org.json.JSONArray().put("query")));
+        return ToolSchemaCatalog.schema(this);
     }
     @Override public Models.ToolResult execute(String input) {
         String query = extractQuery(input);

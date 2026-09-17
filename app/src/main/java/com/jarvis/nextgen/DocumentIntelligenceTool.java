@@ -28,5 +28,7 @@ public final class DocumentIntelligenceTool implements Tool {
         if(!inspected.supported)return Models.ToolResult.fail(Models.ResultCode.UNSUPPORTED,inspected.message);
         return Models.ToolResult.fail(Models.ResultCode.FAILED,inspected.message);
     }
-    @Override public JSONObject schema(){return new JSONObject().put("name",name()).put("description",description()).put("type","object").put("additionalProperties",false).put("properties",new JSONObject().put("request",new JSONObject().put("type","string").put("description","Что сделать с выбранным документом"))).put("required",new org.json.JSONArray().put("request"));}
+    @Override public JSONObject schema(){
+        return ToolSchemaCatalog.schema(this);
+    }
 }

@@ -17,9 +17,11 @@ public final class MemoryStore {
     public synchronized void remember(String type, String key, String value) {
         if (key==null || key.isBlank() || value==null || value.isBlank()) return;
         JSONArray a=read(); long now=System.currentTimeMillis(); boolean found=false;
-        for(int i=0;i<a.length();i++) { JSONObject o=a.optJSONObject(i); if(o!=null && key.equalsIgnoreCase(o.optString("key"))) { o.put("type",type);o.put("value",value.trim());o.put("updatedAt",now);found=true;break; } }
-        if(!found) { JSONObject o=new JSONObject();o.put("id",UUID.randomUUID().toString());o.put("type",type);o.put("key",key.trim());o.put("value",value.trim());o.put("createdAt",now);o.put("updatedAt",now);a.put(o); }
-        write(a);
+        try {
+            for(int i=0;i<a.length();i++) { JSONObject o=a.optJSONObject(i); if(o!=null && key.equalsIgnoreCase(o.optString("key"))) { o.put("type",type);o.put("value",value.trim());o.put("updatedAt",now);found=true;break; } }
+            if(!found) { JSONObject o=new JSONObject();o.put("id",UUID.randomUUID().toString());o.put("type",type);o.put("key",key.trim());o.put("value",value.trim());o.put("createdAt",now);o.put("updatedAt",now);a.put(o); }
+            write(a);
+        } catch (org.json.JSONException e) { throw new IllegalStateException("Не удалось сохранить память JARVIS.", e); }
     }
     public synchronized String get(String key) { for(Entry e:all()) if(e.key().equalsIgnoreCase(key)) return e.value(); return null; }
     public synchronized List<Entry> all() { List<Entry> out=new ArrayList<>(); JSONArray a=read(); for(int i=0;i<a.length();i++){JSONObject o=a.optJSONObject(i);if(o!=null)out.add(entry(o));} out.sort((x,y)->Long.compare(y.updatedAt(),x.updatedAt())); return out; }

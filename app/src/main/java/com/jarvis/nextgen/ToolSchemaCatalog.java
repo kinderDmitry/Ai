@@ -13,22 +13,25 @@ public final class ToolSchemaCatalog {
     private ToolSchemaCatalog() {}
 
     public static JSONObject schema(Tool tool) {
-        JSONObject arguments = new JSONObject()
-                .put("type", "object")
-                .put("additionalProperties", false)
-                .put("properties", new JSONObject()
-                        .put("request", new JSONObject()
-                                .put("type", "string")
-                                .put("minLength", 1)
-                                .put("description", "Validated task parameters in natural language for this registered tool.")))
-                .put("required", new JSONArray().put("request"));
-
-        return new JSONObject()
-                .put("name", tool.name())
-                .put("description", tool.description())
-                .put("input", arguments)
-                .put("strict", true)
-                .put("execution_input", "request");
+        try {
+            JSONObject arguments = new JSONObject()
+                    .put("type", "object")
+                    .put("additionalProperties", false)
+                    .put("properties", new JSONObject()
+                            .put("request", new JSONObject()
+                                    .put("type", "string")
+                                    .put("minLength", 1)
+                                    .put("description", "Validated task parameters in natural language for this registered tool.")))
+                    .put("required", new JSONArray().put("request"));
+            return new JSONObject()
+                    .put("name", tool.name())
+                    .put("description", tool.description())
+                    .put("input", arguments)
+                    .put("strict", true)
+                    .put("execution_input", "request");
+        } catch (org.json.JSONException e) {
+            return new JSONObject();
+        }
     }
 
     public static Validation validate(Tool tool, JSONObject args) {

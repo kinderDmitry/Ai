@@ -23,7 +23,7 @@ public final class SettingsActivity extends Activity {
         section(content,"AI"); toggle(content,"Онлайн AI", "ai_online", true); toggle(content,"Подтверждать действия", "confirm_actions", true); aiProvider(content);
         section(content,"ГОЛОС"); toggle(content,"Непрерывный разговор", "continuous_voice", false); seek(content,"Скорость речи", "speech_rate", 50, 100);
         section(content,"ПАМЯТЬ"); toggle(content,"Долговременная память", "long_memory", true); button(content,"Управление памятью",v->toast("Управление памятью доступно через команды: «Что ты обо мне помнишь?» и «Забудь всё»."));
-        section(content,"АВТОМАТИЗАЦИЯ"); toggle(content,"Автоматизации", "automations", false); toggle(content,"Проактивные уведомления", "proactive", false); button(content,"Открыть редактор автоматизаций",v->startActivity(new Intent(this,com.jarvis.nextgen.automation.AutomationEditorActivity.class)));
+        section(content,"АВТОМАТИЗАЦИЯ"); toggle(content,"Автоматизации", "automations", false); toggle(content,"Проактивные уведомления", "proactive", false); button(content,"Открыть редактор автоматизаций",v->startActivity(new Intent(this,com.jarvis.nextgen.AutomationEditorActivity.class)));
         section(content,"УВЕДОМЛЕНИЯ"); toggle(content,"Уведомления JARVIS", "notifications", true); button(content,"Доступ к уведомлениям Android",v->startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)));
         section(content,"PRIVACY / PERMISSIONS"); showPermissions(content);
         section(content,"ВНЕШНИЙ ВИД"); toggle(content,"Анимации", "animations", true); toggle(content,"Звуковые ответы", "sound", true);

@@ -15,11 +15,23 @@ public final class AutomationEngine {
     private final AlarmManager alarm;
     public AutomationEngine(Context c){this.c=c.getApplicationContext();p=this.c.getSharedPreferences("automations",0);alarm=(AlarmManager)this.c.getSystemService(Context.ALARM_SERVICE);}
     public synchronized void put(String id,String trigger,String condition,String action){
-        JSONObject o=new JSONObject(); o.put("id",id).put("trigger",trigger).put("condition",condition).put("action",action).put("enabled",true).put("createdAt",System.currentTimeMillis());
-        p.edit().putString(id,o.toString()).apply();
+        try {
+            JSONObject o=new JSONObject();
+            o.put("id",id).put("trigger",trigger).put("condition",condition).put("action",action).put("enabled",true).put("createdAt",System.currentTimeMillis());
+            p.edit().putString(id,o.toString()).apply();
+        } catch (org.json.JSONException e) {
+            throw new IllegalStateException("Не удалось сохранить автоматизацию.", e);
+        }
     }
     public synchronized void remove(String id){cancel(id);p.edit().remove(id).apply();}
-    public synchronized void setEnabled(String id,boolean enabled){String raw=p.getString(id,null);if(raw==null)return;JSONObject o=new JSONObject(raw).put("enabled",enabled);p.edit().putString(id,o.toString()).apply();if(!enabled)cancel(id);}
+    public synchronized void setEnabled(String id,boolean enabled){
+        String raw=p.getString(id,null); if(raw==null)return;
+        try {
+            JSONObject o=new JSONObject(raw); o.put("enabled",enabled);
+            p.edit().putString(id,o.toString()).apply();
+            if(!enabled)cancel(id);
+        } catch (org.json.JSONException e) { throw new IllegalStateException("Не удалось изменить состояние автоматизации.", e); }
+    }
     public synchronized Map<String,?> all(){return Collections.unmodifiableMap(p.getAll());}
     public synchronized JSONObject get(String id){String raw=p.getString(id,null);return raw==null?null:new JSONObject(raw);}
     public void scheduleDaily(String id,int hour,int minute){
