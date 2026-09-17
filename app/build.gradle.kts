@@ -3,7 +3,7 @@ plugins { id("com.android.application") }
 android {
     namespace = "com.jarvis.nextgen"
     compileSdk = 36
-    defaultConfig { applicationId = "com.jarvis.nextgen"; minSdk = 26; targetSdk = 36; versionCode = 52; versionName = "1.53.0" }
+    defaultConfig { applicationId = "com.jarvis.nextgen"; minSdk = 26; targetSdk = 36; versionCode = 53; versionName = "1.53.1" }
     buildTypes { release { isMinifyEnabled = true; proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro") } }
     dependencies {
         implementation("androidx.core:core:1.17.0")
