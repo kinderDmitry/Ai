@@ -8,6 +8,9 @@ jobs:
    - uses: actions/setup-java@v4
      with: {distribution: temurin, java-version: '17'}
    - uses: android-actions/setup-android@v3
+     with:
+       # setup-android defaults to the obsolete SDK package `tools`; disable that default.
+       packages: ''
    - name: Install Android SDK packages
      run: |
        set -euo pipefail
@@ -24,9 +27,21 @@ jobs:
        test -f settings.gradle.kts
        test -f app/build.gradle.kts
        test -f app/src/main/AndroidManifest.xml
-       grep -q 'versionName = "1.53.1"' app/build.gradle.kts
-       grep -q 'versionCode = 53' app/build.gradle.kts
-       ! grep -RIn --exclude-dir=.git -E 'sdkmanager.*[\"\x27]tools[\"\x27]|packages:.*tools' .github/workflows
+       grep -q 'versionName = "1.53.4"' app/build.gradle.kts
+       grep -q 'versionCode = 56' app/build.gradle.kts
+       python3 - <<'PY2'
+       from pathlib import Path
+       import re
+       bad = []
+       for p in Path('.github/workflows').glob('*.y*ml'):
+           for n, line in enumerate(p.read_text().splitlines(), 1):
+               if re.search(r'^\s*packages\s*:.*\btools\b', line, re.I) or re.search(r'^\s*sdkmanager\b.*[\"\']tools[\"\']', line, re.I):
+                   bad.append(f'{p}:{n}')
+       if bad:
+           raise SystemExit('Obsolete Android SDK package tools requested: ' + ', '.join(bad))
+       print('SDK workflow check passed')
+       PY2
+       if grep -RIn -E 'com\.jarvis\.nextgen\.(voice|automation|system|proactive|tools)\.' app/src/main app/src/test; then echo 'Stale flattened-package references found'; exit 1; fi
        python3 - <<'PY2'
        import xml.etree.ElementTree as ET
        ET.parse("app/src/main/AndroidManifest.xml")
